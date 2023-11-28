@@ -28,18 +28,21 @@ class Todo implements JsonSerializable
 
     public static function save(Todo $todo): Todo
     {
+        error_log(print_r($todo, true));
         if ($todo->getId() === 0) {
+            error_log('This is an insert');
             // Insert
             $sql = 'INSERT INTO Todo(userId, title, notes) VALUES (:userId, :title, :notes)';
             $sth = self::$db->prepare($sql);
+            $sth->bindValue('userId', $todo->getUserId());
         } else {
             // Update
             $sql = 'UPDATE Todo SET title = :title, complete = :complete, notes = :notes WHERE id = :id';
             $sth = self::$db->prepare($sql);
             $sth->bindValue('id', $todo->getId());
+            $sth->bindValue('complete', $todo->isComplete(), PDO::PARAM_INT);
         }
         $sth->bindValue('title', $todo->getTitle());
-        $sth->bindValue('complete', $todo->isComplete(), PDO::PARAM_INT);
         $sth->bindValue('notes', $todo->getNotes());
         $sth->execute();
 
