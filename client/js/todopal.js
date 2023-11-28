@@ -4,15 +4,34 @@ const BASE_URI = 'http://localhost:8000/todopal/api/';
 let todos = [];
 
 function init() {
-    // Check whether we have a token in local storage
     setInitialColourMode();
-    checkAndRedirect('home', bindHome);
+    checkAndRedirect('home', loadTodos);
 }
 
 function getFormData(object) {
     const formData = new FormData();
     Object.keys(object).forEach(key => formData.append(key, object[key]));
     return formData;
+}
+
+function setInitialColourMode() {
+    let colorMode = localStorage.getItem("todopal_color")
+    if (colorMode) {
+        toggleColourMode(colorMode);
+    } else {
+        toggleColourMode(window.matchMedia('(prefers-color-scheme: dark)') ? 'dark' : 'light');
+    }
+}
+
+function toggleColourMode(mode) {
+    document.documentElement.setAttribute("data-bs-theme", mode);
+    const switcher = document.getElementById('color-switch-area');
+    if (mode === 'dark') {
+        switcher.innerHTML = '<i class="bi-moon-stars-fill"></i>';
+    } else {
+        switcher.innerHTML = '<i class="bi-sun-fill"></i>';
+    }
+    localStorage.setItem("todopal_color", mode);
 }
 
 function checkAndRedirect(redirect = null, cb = null) {
@@ -66,7 +85,6 @@ function registerUser() {
 }
 
 function bindHome() {
-    loadTodos();
     document.getElementById('todoForm').addEventListener('submit', (evt) => {
         evt.preventDefault();
         todoData = new FormData(document.getElementById('todoForm'));
@@ -99,7 +117,8 @@ function loadTodos() {
         .then(res => res.json())
         .then(res => {
             todos = res.data;
-            displayTodos()
+            displayTodos();
+            bindHome();
         })
         .catch(err => showMessage(err, 'danger'));
     });
@@ -187,31 +206,4 @@ async function showView(view) {
         .then(html => document.getElementById('mainContent').innerHTML = html);
     }
     return null;
-}
-
-function showMessage(message, style='success') {
-    const alertArea = document.getElementById('alertArea');
-    alertArea.innerHTML = message;
-    alertArea.className = `alert alert-${style}`;
-    alertArea.style.display = 'block';
-}
-
-function setInitialColourMode() {
-    let colorMode = localStorage.getItem("todopal_color")
-    if (colorMode) {
-        toggleColourMode(colorMode);
-    } else {
-        toggleColourMode(window.matchMedia('(prefers-color-scheme: dark)') ? 'dark' : 'light');
-    }
-}
-
-function toggleColourMode(mode) {
-    document.documentElement.setAttribute("data-bs-theme", mode);
-    const switcher = document.getElementById('color-switch-area');
-    if (mode === 'dark') {
-        switcher.innerHTML = '<i class="bi-moon-stars-fill"></i>';
-    } else {
-        switcher.innerHTML = '<i class="bi-sun-fill"></i>';
-    }
-    localStorage.setItem("todopal_color", mode);
 }
