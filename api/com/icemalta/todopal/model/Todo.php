@@ -28,9 +28,7 @@ class Todo implements JsonSerializable
 
     public static function save(Todo $todo): Todo
     {
-        error_log(print_r($todo, true));
         if ($todo->getId() === 0) {
-            error_log('This is an insert');
             // Insert
             $sql = 'INSERT INTO Todo(userId, title, notes) VALUES (:userId, :title, :notes)';
             $sth = self::$db->prepare($sql);
