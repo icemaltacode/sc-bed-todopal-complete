@@ -53,6 +53,8 @@ switch ($requestMethod) {
         ApiUtil::parse_raw_http_request($requestData);
         $requestData = is_array($requestData) ? $requestData : [];
         break;
+    case 'DELETE':
+        break;
     default:
         sendResponse(null, 405, 'Method not allowed.');
 }
@@ -183,7 +185,7 @@ $endpoints["todo"] = function (string $requestMethod, array $requestData): void 
             $todoId = $requestData['dataId'];
             $todo = new Todo(todoUserId: $userId, todoId: $todoId);
             $todo = Todo::delete($todo);
-            sendResponse($todo, 201);
+            sendResponse($todo);
         } else {
             sendResponse(null, 405, 'Method not allowed.');
         }
