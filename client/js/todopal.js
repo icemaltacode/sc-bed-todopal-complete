@@ -65,7 +65,7 @@ function bindLogin(redirect, cb) {
             localStorage.setItem('todopal_user', res.data.user);
             showView(redirect).then(cb);
         })
-        .catch(err => showMessage(err, 'danger'));
+        .catch(err => console.error(err));
     });
 }
 
@@ -79,7 +79,7 @@ function registerUser() {
                 body: new FormData(document.getElementById('registerForm'))
             })
             .then(showView('login').then(() => bindLogin('home', bindHome)))
-            .catch(err => showMessage(err, 'danger'));
+            .catch(err => console.error(err));
         });
     });
 }
@@ -99,7 +99,7 @@ function bindHome() {
                 body: todoData
             })
             .then(loadTodos)
-            .catch(err => showMessage(err, 'danger'));
+            .catch(err => console.error(err));
         });
     });
 }
@@ -120,7 +120,7 @@ function loadTodos() {
             displayTodos();
             bindHome();
         })
-        .catch(err => showMessage(err, 'danger'));
+        .catch(err => console.error(err));
     });
 }
 
@@ -168,7 +168,7 @@ function checkTodo(evt, localTodoId) {
             body: getFormData(todo)
         })
         .then(loadTodos)
-        .catch(err => showMessage(err, 'danger'));
+        .catch(err => console.error(err));
     });
 }
 
@@ -184,7 +184,7 @@ function deleteTodo(localTodoId) {
             }
         })
         .then(loadTodos)
-        .catch(err => showMessage(err, 'danger'));
+        .catch(err => console.error(err));
     });
 }
 
